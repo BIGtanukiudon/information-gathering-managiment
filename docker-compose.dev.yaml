@@ -1,0 +1,26 @@
+version: "3"
+services:
+  information-gathering-managiment:
+    build:
+      context: .
+      target: dev
+    volumes:
+      - ./app:/home/app
+      - ./logs:/home/logs
+    ports:
+      - 8000:8000
+      - 8080:8080
+    tty: true
+    restart: always
+    depends_on:
+      - db
+
+  db:
+    image: postgres:13.3-alpine
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data/
+      - ./initdb:/docker-entrypoint-initdb.d
+    env_file:
+      - ./app/database/.env
+    ports:
+      - 5432:5432
