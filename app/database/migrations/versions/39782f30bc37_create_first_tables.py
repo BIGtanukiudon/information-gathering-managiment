@@ -8,9 +8,8 @@ Create Date: 2021-06-15 21:18:50.571188
 
 from alembic import op
 import sqlalchemy as sa
-from sqlalchemy.sql.functions import current_timestamp, now
 from sqlalchemy.sql import func
-from sqlalchemy.sql.sqltypes import Time
+from sqlalchemy.schema import ForeignKey
 
 
 # revision identifiers, used by Alembic
@@ -26,12 +25,12 @@ def create_collection_destination_table():
         sa.Column("id", sa.Integer, primary_key=True, autoincrement=True),
         sa.Column("name", sa.Text, nullable=False),
         sa.Column("domain", sa.Text, nullable=False),
-        sa.Column("contents_class_name", sa.Text, nullable=False),
-        sa.Column("title_class_name", sa.Text, nullable=False),
-        sa.Column("published_date_class_name", sa.Text, nullable=False),
+        sa.Column("contents_attr_name", sa.Text, nullable=False),
+        sa.Column("title_attr_name", sa.Text, nullable=False),
+        sa.Column("published_date_attr_name", sa.Text, nullable=False),
         sa.Column("is_getting_domain", sa.Boolean, nullable=False),
-        sa.Column("domain_class_name", sa.Text, nullable=False),
-        sa.Column("content_url_class_name", sa.Text, nullable=False),
+        sa.Column("domain_attr_name", sa.Text, nullable=False),
+        sa.Column("content_url_attr_name", sa.Text, nullable=False),
         sa.Column("created_at",
                   sa.DateTime(timezone=True),
                   nullable=False,
@@ -52,6 +51,10 @@ def create_content_table():
         sa.Column("published_at", sa.DateTime, nullable=False),
         sa.Column("domain", sa.Text, nullable=False),
         sa.Column("is_read_later", sa.Boolean, nullable=False),
+        sa.Column("collection_destination_id",
+                  sa.Integer,
+                  ForeignKey("collection_destination.id",
+                             name="fk_content_collection_destination_id")),
         sa.Column("created_at",
                   sa.DateTime(timezone=True),
                   nullable=False,
