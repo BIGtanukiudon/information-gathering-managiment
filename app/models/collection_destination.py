@@ -7,11 +7,13 @@ class CollectionDestinationBase(BaseModel):
     id: Optional[int]
     name: Optional[str]
     domai: Optional[str]
-    contents_class_name: Optional[str]
-    title_class_name: Optional[str]
-    published_date_class_name: Optional[str]
+    contents_attr_name: Optional[str]
+    title_attr_name: Optional[str]
+    published_date_attr_name: Optional[str]
     is_getting_domain: Optional[bool]
-    content_url_class_name: Optional[str]
+    domain_attr_name: Optional[str]
+    content_url_attr_name: Optional[str]
+    user_id: Optional[int]
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
 
@@ -19,8 +21,10 @@ class CollectionDestinationBase(BaseModel):
 class CollectionDestinationCreate(CollectionDestinationBase):
     name: str
     domai: str
-    contents_class_name: str
-    title_class_name: str
-    published_date_class_name: str
+    contents_attr_name: str
+    title_attr_name: str
+    published_date_attr_name: str
     is_getting_domain: bool
-    content_url_class_name: str
+    domain_attr_name: str
+    content_url_attr_name: str
+    user_id: int
