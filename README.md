@@ -13,7 +13,7 @@ docker-compose -f docker-compose.dev.yaml up -d
 VS Code Remote Containerで開発を行っている場合は以下の環境変数を追加する。
 
 ```bash
-export PYTHONPATH=/workspace/app/database/
+export PYTHONPATH=/workspace/app/database/:/workspace/app/
 ```
 
 パスが設定されているか以下のスクリプトファイルを実行し、確認。
