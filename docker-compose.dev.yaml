@@ -6,7 +6,7 @@ services:
       target: dev
     volumes:
       - ./app:/home/app
-      - ./logs:/home/logs
+      - ./app/logs:/home/logs
     ports:
       - 8000:8000
       - 8080:8080

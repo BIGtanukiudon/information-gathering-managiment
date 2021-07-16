@@ -18,7 +18,7 @@ RUN pip install pipenv
 
 # 開発用
 FROM base as dev
-RUN pipenv install --dev
+RUN apt-get install -y git && pipenv install --dev
 
 # 本番用
 FROM base as prod
