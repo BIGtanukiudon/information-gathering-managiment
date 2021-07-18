@@ -19,9 +19,9 @@ branch_labels = None
 depends_on = None
 
 
-def create_user_table():
+def create_account_table():
     op.create_table(
-        "user",
+        "account",
         sa.Column("id", sa.Integer, primary_key=True, autoincrement=True),
         sa.Column("name", sa.Text, nullable=False),
         sa.Column("password", sa.Text, nullable=False),
@@ -33,6 +33,7 @@ def create_user_table():
         sa.Column("updated_at",
                   sa.DateTime(timezone=True),
                   nullable=False,
+                  server_default=func.now(),
                   onupdate=func.now()),
     )
 
@@ -49,10 +50,10 @@ def create_collection_destination_table():
         sa.Column("is_getting_domain", sa.Boolean, nullable=False),
         sa.Column("domain_attr_name", sa.Text, nullable=False),
         sa.Column("content_url_attr_name", sa.Text, nullable=False),
-        sa.Column("user_id",
+        sa.Column("account_id",
                   sa.Integer,
-                  ForeignKey("user.id",
-                             name="fk_collection_destination_user_id")),
+                  ForeignKey("account.id",
+                             name="fk_collection_destination_account_id")),
         sa.Column("created_at",
                   sa.DateTime(timezone=True),
                   nullable=False,
@@ -60,6 +61,7 @@ def create_collection_destination_table():
         sa.Column("updated_at",
                   sa.DateTime(timezone=True),
                   nullable=False,
+                  server_default=func.now(),
                   onupdate=func.now()),
     )
 
@@ -77,10 +79,10 @@ def create_content_table():
                   sa.Integer,
                   ForeignKey("collection_destination.id",
                              name="fk_content_collection_destination_id")),
-        sa.Column("user_id",
+        sa.Column("account_id",
                   sa.Integer,
-                  ForeignKey("user.id",
-                             name="fk_content_user_id")),
+                  ForeignKey("account.id",
+                             name="fk_content_account_id")),
         sa.Column("created_at",
                   sa.DateTime(timezone=True),
                   nullable=False,
@@ -88,12 +90,13 @@ def create_content_table():
         sa.Column("updated_at",
                   sa.DateTime(timezone=True),
                   nullable=False,
+                  server_default=func.now(),
                   onupdate=func.now()),
     )
 
 
 def upgrade():
-    create_user_table()
+    create_account_table()
     create_collection_destination_table()
     create_content_table()
 
