@@ -34,7 +34,7 @@ async def get_collection_destination(
     if res is not None:
         return res
     else:
-        return HTTP_404_NOT_FOUND
+        return JSONResponse(status_code=HTTP_404_NOT_FOUND)
 
 
 @router.get("/list")
