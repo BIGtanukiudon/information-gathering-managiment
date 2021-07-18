@@ -6,10 +6,11 @@ client = TestClient(app)
 api_endpoint = "/api/collection_destination"
 
 
-def test_get():
+def test_get_collection_destination_list():
     response = client.get(f"{api_endpoint}/list")
+    res_json = response.json()
     assert response.status_code == 200
-    assert response.json() == {"message": "collection_destination list."}
+    assert len(res_json) > 0
 
 
 def test_register_collection_destination():

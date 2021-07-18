@@ -1,10 +1,11 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime
 from sqlalchemy.orm import relationship
 from database.config import Base
 
 
 class Account(Base):
     __tablename__ = "account"
+    __table_args__ = {'extend_existing': True}
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
@@ -17,6 +18,7 @@ class Account(Base):
 
 class CollectionDestination(Base):
     __tablename__ = "collection_destination"
+    __table_args__ = {'extend_existing': True}
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
@@ -30,3 +32,12 @@ class CollectionDestination(Base):
     account_id = Column(Integer, ForeignKey("account.id"))
 
     account = relationship("Account", back_populates="collection_destinations")
+
+
+class CollectionDestinationForGet(CollectionDestination):
+    created_at = Column(DateTime)
+    updated_at = Column(DateTime)
+
+
+class CollectionDestinationForCreate(CollectionDestination):
+    pass

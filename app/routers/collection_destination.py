@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
-from collection_destination import CollectionDestination, CollectionDestinationCreate
-from database.models import CollectionDestination as CDDM
+from starlette.status import HTTP_404_NOT_FOUND
+from collection_destination import CollectionDestinationCreate
+from database.models import CollectionDestinationForGet as CDDM4G, CollectionDestinationForCreate as CDDM4C
 from database.config import SessionLocal
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
@@ -22,15 +23,19 @@ def get_db():
 
 
 @router.get("/list")
-async def get_list():
-    return {"message": "collection_destination list."}
+async def get_collection_destination_list(db: Session = Depends(get_db)):
+    res = db.query(CDDM4G).order_by(CDDM4G.updated_at).all()
+    if len(res) == 0:
+        return HTTP_404_NOT_FOUND
+    elif len(res) > 0:
+        return res
 
 
 @router.post("/register")
 async def register_collection_destination(
         register_item: CollectionDestinationCreate,
         db: Session = Depends(get_db)):
-    insert_item = CDDM(**register_item.dict())
+    insert_item = CDDM4C(**register_item.dict())
     if insert_item is None:
         return JSONResponse(status.HTTP_400_BAD_REQUEST)
     try:
