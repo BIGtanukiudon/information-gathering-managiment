@@ -6,6 +6,15 @@ client = TestClient(app)
 api_endpoint = "/api/collection_destination"
 
 
+def test_get_collection_destination():
+    response = client.get(f"{api_endpoint}/1")
+    res_json = response.json()
+    print(response.status_code)
+    print(res_json)
+    assert response.status_code == 200
+    assert res_json["name"] == "pytest用"
+
+
 def test_get_collection_destination_list():
     response = client.get(f"{api_endpoint}/list")
     res_json = response.json()

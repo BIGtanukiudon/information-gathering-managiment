@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
-from starlette.status import HTTP_404_NOT_FOUND
+from starlette.status import HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND
 from collection_destination import CollectionDestinationCreate
 from database.models import CollectionDestinationForGet as CDDM4G, CollectionDestinationForCreate as CDDM4C
 from database.config import SessionLocal
@@ -20,6 +20,21 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+@router.get("/{collection_destination_id}")
+async def get_collection_destination(
+        db: Session = Depends(get_db),
+        collection_destination_id: int = 0):
+    if collection_destination_id <= 0:
+        return JSONResponse(status_code=HTTP_400_BAD_REQUEST)
+
+    res = db.query(CDDM4G).filter(
+        CDDM4G.id == collection_destination_id).first()
+    if res is not None:
+        return res
+    else:
+        return HTTP_404_NOT_FOUND
 
 
 @router.get("/list")
