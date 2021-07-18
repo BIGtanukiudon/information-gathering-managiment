@@ -1,10 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from database.config import DATABASE_URL
-from databases import Database
-from routers import collection_destination
 
-database = Database(DATABASE_URL, min_size=2, max_size=5)
+from routers import collection_destination
 
 
 def get_application():
@@ -24,22 +21,6 @@ def get_application():
 
 
 app = get_application()
-
-
-@app.on_event("startup")
-async def startup():
-    try:
-        await database.connect()
-    except Exception as e:
-        print(e)
-
-
-@app.on_event("shutdown")
-async def shutdown():
-    try:
-        await database.disconnect()
-    except Exception as e:
-        print(e)
 
 
 @app.get("/")

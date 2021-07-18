@@ -1,9 +1,9 @@
 import os
 from os.path import join, dirname
-''' from databases import DatabaseURL
-from starlette.config import Config
-from starlette.datastructures import Secret '''
 from dotenv import load_dotenv
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
 
 
 load_dotenv(verbose=True)
@@ -19,3 +19,8 @@ POSTGRES_PORT = os.environ.get("POSTGRES_PORT")
 POSTGRES_DB = os.environ.get("POSTGRES_DB")
 
 DATABASE_URL = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}"
+
+engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+Base = declarative_base()

@@ -3,7 +3,7 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-class UserBase(BaseModel):
+class AccountBase(BaseModel):
     id: Optional[int]
     name: Optional[str]
     password: Optional[str]
@@ -12,6 +12,6 @@ class UserBase(BaseModel):
     updated_at: Optional[datetime]
 
 
-class UserCreate(UserBase):
+class AccountCreate(AccountBase):
     name: str
     password: str
