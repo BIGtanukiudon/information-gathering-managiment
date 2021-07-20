@@ -1,11 +1,11 @@
-from fastapi import APIRouter, Depends, status
+from typing import List
+from fastapi import APIRouter, Depends, status, HTTPException
 from fastapi.responses import JSONResponse
 from starlette.status import HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND
-from models.collection_destination import CollectionDestinationCreate
-from database.models import CollectionDestinationForGet as CDDM4G, CollectionDestinationForCreate as CDDM4C
+from models.collection_destination import CollectionDestination as CD, CollectionDestinationCreate as CDC
 from database.config import SessionLocal
 from sqlalchemy.orm import Session
-from sqlalchemy.exc import SQLAlchemyError
+import utils.crud_collection_destination as crud_cd
 
 
 router = APIRouter(
@@ -22,43 +22,37 @@ def get_db():
         db.close()
 
 
-@router.get("/{collection_destination_id}")
+@router.get("/{collection_destination_id}", response_model=CD)
 async def get_collection_destination(
         db: Session = Depends(get_db),
         collection_destination_id: int = 0):
     if collection_destination_id <= 0:
-        return JSONResponse(status_code=HTTP_400_BAD_REQUEST)
+        raise HTTPException(status_code=HTTP_400_BAD_REQUEST)
 
-    res = db.query(CDDM4G).filter(
-        CDDM4G.id == collection_destination_id).first()
+    res = crud_cd.get_collection_destination(db, collection_destination_id)
     if res is not None:
         return res
     else:
-        return JSONResponse(status_code=HTTP_404_NOT_FOUND)
+        raise HTTPException(status_code=HTTP_404_NOT_FOUND)
 
 
-@router.get("/list")
+@router.get("/list/", response_model=List[CD])
 async def get_collection_destination_list(db: Session = Depends(get_db)):
-    res = db.query(CDDM4G).order_by(CDDM4G.updated_at).all()
+    res = crud_cd.get_collection_destination_list(db)
     if len(res) == 0:
-        return HTTP_404_NOT_FOUND
+        raise HTTPException(status_code=HTTP_404_NOT_FOUND)
     elif len(res) > 0:
         return res
 
 
-@router.post("/register")
+@router.post("/register/")
 async def register_collection_destination(
-        register_item: CollectionDestinationCreate,
+        register_item: CDC,
         db: Session = Depends(get_db)):
-    insert_item = CDDM4C(**register_item.dict())
-    if insert_item is None:
-        return JSONResponse(status.HTTP_400_BAD_REQUEST)
-    try:
-        db.add(insert_item)
-        db.commit()
-        db.refresh(insert_item)
+
+    res = crud_cd.create_collection_destination(db, register_item)
+    if res is not None:
         return JSONResponse(status_code=status.HTTP_201_CREATED)
-    except SQLAlchemyError as e:
-        print(e)
-        return JSONResponse(
+    else:
+        raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
