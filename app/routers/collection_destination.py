@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from starlette.status import HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND
-from collection_destination import CollectionDestinationCreate
+from models.collection_destination import CollectionDestinationCreate
 from database.models import CollectionDestinationForGet as CDDM4G, CollectionDestinationForCreate as CDDM4C
 from database.config import SessionLocal
 from sqlalchemy.orm import Session
