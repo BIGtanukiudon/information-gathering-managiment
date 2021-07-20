@@ -1,4 +1,4 @@
-from config import DATABASE_URL
+from database.config import DATABASE_URL
 from logging.config import fileConfig
 import pathlib
 import alembic
