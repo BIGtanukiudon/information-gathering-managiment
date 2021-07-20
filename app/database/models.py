@@ -26,8 +26,6 @@ class CollectionDestination(Base):
     contents_attr_name = Column(String)
     title_attr_name = Column(String)
     published_date_attr_name = Column(String)
-    is_getting_domain = Column(Boolean, default=False)
-    domain_attr_name = Column(String)
     content_url_attr_name = Column(String)
     account_id = Column(Integer, ForeignKey("account.id"))
 

@@ -47,8 +47,6 @@ def create_collection_destination_table():
         sa.Column("contents_attr_name", sa.Text, nullable=False),
         sa.Column("title_attr_name", sa.Text, nullable=False),
         sa.Column("published_date_attr_name", sa.Text, nullable=False),
-        sa.Column("is_getting_domain", sa.Boolean, nullable=False),
-        sa.Column("domain_attr_name", sa.Text, nullable=False),
         sa.Column("content_url_attr_name", sa.Text, nullable=False),
         sa.Column("account_id",
                   sa.Integer,

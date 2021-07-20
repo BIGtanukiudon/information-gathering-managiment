@@ -15,8 +15,6 @@ def test_register_collection_destination():
             "contents_attr_name": "contents-attr-name-test",
             "title_attr_name": "title-attr-name-test",
             "published_date_attr_name": "published-date-attr-name-test",
-            "is_getting_domain": True,
-            "domain_attr_name": "domain-attr-name-test",
             "content_url_attr_name": "content-url-attr-name",
             "account_id": 1
         })

@@ -8,8 +8,6 @@ class CollectionDestinationBase(BaseModel):
     contents_attr_name: str
     title_attr_name: str
     published_date_attr_name: str
-    is_getting_domain: bool
-    domain_attr_name: str
     content_url_attr_name: str
     account_id: int
 
@@ -29,7 +27,5 @@ class CollectionDestinationCreate(CollectionDestinationBase):
     contents_attr_name: str
     title_attr_name: str
     published_date_attr_name: str
-    is_getting_domain: bool
-    domain_attr_name: str
     content_url_attr_name: str
     account_id: int
