@@ -14,6 +14,7 @@ class Account(Base):
 
     collection_destinations = relationship(
         "CollectionDestination", back_populates="account")
+    contents = relationship("Content", back_populates="account")
 
 
 class CollectionDestination(Base):
@@ -30,6 +31,9 @@ class CollectionDestination(Base):
     account_id = Column(Integer, ForeignKey("account.id"))
 
     account = relationship("Account", back_populates="collection_destinations")
+    contents = relationship(
+        "Content",
+        back_populates="collection_destination")
 
 
 class CollectionDestinationForGet(CollectionDestination):
@@ -38,4 +42,27 @@ class CollectionDestinationForGet(CollectionDestination):
 
 
 class CollectionDestinationForCreate(CollectionDestination):
+    pass
+
+
+class Content(Base):
+    __tablename__ = "content"
+    __table_args__ = {'extend_existing': True}
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String)
+    content_url = Column(String)
+    published_at = Column(DateTime)
+    domain = Column(String)
+    is_read_later = Column(Boolean, default=False)
+    collection_destination_id = Column(
+        Integer, ForeignKey("collection_destination.id"))
+    account_id = Column(Integer, ForeignKey("account.id"))
+
+    account = relationship("Account", back_populates="contents")
+    collection_destination = relationship(
+        "CollectionDestination", back_populates="contents")
+
+
+class ContentForCreate(Content):
     pass

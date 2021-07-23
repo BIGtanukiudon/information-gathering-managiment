@@ -11,12 +11,13 @@ sqlalchemy = "*"
 alembic = "*"
 psycopg2-binary = "*"
 pydantic = "*"
+requests = "*"
+beautifulsoup4 = "*"
 
 [dev-packages]
 autopep8 = "*"
 flake8 = "*"
 pytest = "*"
-requests = "*"
 
 [requires]
 python_version = "3.8"
