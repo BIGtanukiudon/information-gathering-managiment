@@ -1,8 +1,12 @@
 from typing import List
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
-from database.models import ContentForCreate as C4C
+from database.models import ContentForGet as CDM4G, ContentForCreate as C4C
 from models.content import ContentCreate as CC
+
+
+def get_content_list(db: Session, limit: int):
+    return db.query(CDM4G).order_by(CDM4G.published_at).limit(limit).all()
 
 
 def create_content_list(db: Session, item_list: List[CC]):

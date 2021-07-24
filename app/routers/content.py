@@ -1,10 +1,13 @@
 from datetime import date, datetime
 from typing import List
+
+from requests import models
 from utils.scraping import scraping_contents as sc
 import utils.crud_collection_destination as crud_cd
 import utils.crud_content as crud_c
 from fastapi import APIRouter, Depends, status, HTTPException
-from models.content import ContentCreate as CC
+from starlette.status import HTTP_404_NOT_FOUND
+from models.content import Content as MC, ContentCreate as CC
 from models.scraping import ScrapingContent as SCM
 from database.config import SessionLocal
 from sqlalchemy.orm import Session
@@ -21,6 +24,15 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+@router.get("/list/{limit}", response_model=List[MC])
+async def get_content_list(db: Session = Depends(get_db), limit: int = 30):
+    res = crud_c.get_content_list(db, limit)
+    if len(res) == 0:
+        raise HTTPException(status_code=HTTP_404_NOT_FOUND)
+    elif len(res) > 0:
+        return res
 
 
 @router.post("/scraping_contents/", response_model=List[CC])

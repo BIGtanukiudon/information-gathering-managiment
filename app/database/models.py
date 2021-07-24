@@ -64,5 +64,10 @@ class Content(Base):
         "CollectionDestination", back_populates="contents")
 
 
+class ContentForGet(Content):
+    created_at = Column(DateTime)
+    updated_at = Column(DateTime)
+
+
 class ContentForCreate(Content):
     pass

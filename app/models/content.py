@@ -9,6 +9,17 @@ class ContentBase(BaseModel):
     domain: str
 
 
+class Content(ContentBase):
+    id: int
+    collection_destination_id: int
+    account_id: int
+    created_at: datetime
+    updated_at: datetime
+
+    class Config:
+        orm_mode = True
+
+
 class ContentCreate(ContentBase):
     is_read_later: bool
     collection_destination_id: int
