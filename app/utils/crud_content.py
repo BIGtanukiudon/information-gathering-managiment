@@ -6,7 +6,10 @@ from models.content import ContentCreate as CC
 
 
 def get_content_list(db: Session, limit: int):
-    return db.query(CDM4G).order_by(CDM4G.published_at).limit(limit).all()
+    if limit <= 0:
+        return db.query(CDM4G).order_by(CDM4G.published_at).all()
+    else:
+        return db.query(CDM4G).order_by(CDM4G.published_at).limit(limit).all()
 
 
 def create_content_list(db: Session, item_list: List[CC]):

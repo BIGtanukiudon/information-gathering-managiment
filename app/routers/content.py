@@ -42,6 +42,8 @@ async def scraping_contents(db: Session = Depends(get_db)):
     if len(collection_destination_list) == 0:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
+    registered_content_list = crud_c.get_content_list(db, 0)
+
     create_content_list: List[CC] = []
     for collection_destination in collection_destination_list:
         cd_id = collection_destination.id
@@ -56,8 +58,14 @@ async def scraping_contents(db: Session = Depends(get_db)):
 
         for scraping_content in scraping_contents:
             today = date.today()
-            # 当日の日付のもののみ登録
-            if today == datetime.date(scraping_content.published_at):
+            is_registerd = next(
+                filter(
+                    lambda x: x.title == scraping_content.title,
+                    registered_content_list), None) is not None
+
+            # 当日の日付のもの及び、まだ登録が無いものを登録
+            if today == datetime.date(
+                    scraping_content.published_at) and is_registerd is False:
                 content = CC(
                     title=scraping_content.title,
                     content_url=scraping_content.content_url,
