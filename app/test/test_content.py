@@ -12,7 +12,7 @@ def test_scraping_contents():
     assert response.status_code == 200
 
 
-def test_scraping_contents():
+def test_get_content_list():
     response = client.get(f"{api_endpoint}/list/30")
     res_json = response.json()
     assert response.status_code == 200
