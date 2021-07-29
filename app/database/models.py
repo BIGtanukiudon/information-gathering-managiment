@@ -17,6 +17,15 @@ class Account(Base):
     contents = relationship("Content", back_populates="account")
 
 
+class AccountForGet(Account):
+    created_at = Column(DateTime)
+    updated_at = Column(DateTime)
+
+
+class AccountForCreate(Account):
+    pass
+
+
 class CollectionDestination(Base):
     __tablename__ = "collection_destination"
     __table_args__ = {'extend_existing': True}

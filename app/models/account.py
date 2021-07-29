@@ -1,17 +1,18 @@
 from datetime import datetime
-from typing import Optional
 from pydantic import BaseModel
 
 
 class AccountBase(BaseModel):
-    id: Optional[int]
-    name: Optional[str]
-    password: Optional[str]
-    is_active: Optional[bool]
-    created_at: Optional[datetime]
-    updated_at: Optional[datetime]
+    name: str
+    password: str
+
+
+class Account(BaseModel):
+    id: int
+    is_active: bool
+    created_at: datetime
+    updated_at: datetime
 
 
 class AccountCreate(AccountBase):
-    name: str
-    password: str
+    pass
