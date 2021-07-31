@@ -21,3 +21,7 @@ def count_list_by_name(db: Session, name: str) -> int:
     if name != "":
         count = db.query(AM4G).filter(AM4G.name == name).count()
     return count
+
+
+def get_user_by_name(db: Session, name: str):
+    return db.query(AM4G).filter(AM4G.name == name).first()

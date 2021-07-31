@@ -1,6 +1,9 @@
 import hashlib
 from fastapi import APIRouter, Depends, status, HTTPException
+from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.responses import JSONResponse
+from fastapi_login import LoginManager
+from fastapi_login.exceptions import InvalidCredentialsException
 import config.env as env
 from database.config import SessionLocal
 from sqlalchemy.orm import Session
@@ -12,6 +15,9 @@ router = APIRouter(
     prefix="/api/auth",
     tags=["authentication"]
 )
+
+secret_key = env.SECRET_KEY if env.SECRET_KEY is not None else ""
+manager = LoginManager(secret_key, "/api/auth/login/")
 
 
 def get_db():
@@ -49,3 +55,41 @@ async def register_account(
     else:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@manager.user_loader
+def get_user_by_name(name: str, db: Session = None):
+    res = None
+    if db is None:
+        db = SessionLocal()
+        try:
+            res = crud_a.get_user_by_name(db, name)
+        finally:
+            db.close()
+    else:
+        res = crud_a.get_user_by_name(db, name)
+    return res
+
+
+@router.post("/login/")
+async def login(
+        data: OAuth2PasswordRequestForm = Depends(),
+        db: Session = Depends(get_db)):
+    name = data.username
+    password = data.password
+    hashed_pw = hash_password(password, secret_key)
+
+    user = crud_a.get_user_by_name(db, name)
+
+    if user is None:
+        raise InvalidCredentialsException
+    elif user.password != hashed_pw:
+        raise InvalidCredentialsException
+
+    access_token = manager.create_access_token(
+        data={"sub": name}
+    )
+    return JSONResponse(
+        status_code=status.HTTP_200_OK, content={
+            "access_token": access_token,
+            "token_type": "Bearer"})
