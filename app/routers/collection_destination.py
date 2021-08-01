@@ -6,6 +6,7 @@ from models.collection_destination import CollectionDestination as CD, Collectio
 from database.config import SessionLocal
 from sqlalchemy.orm import Session
 import utils.crud_collection_destination as crud_cd
+from routers.authentication import manager
 
 
 router = APIRouter(
@@ -48,7 +49,10 @@ async def get_collection_destination_list(db: Session = Depends(get_db)):
 @router.post("/register/")
 async def register_collection_destination(
         register_item: CDC,
-        db: Session = Depends(get_db)):
+        db: Session = Depends(get_db),
+        user=Depends(manager)):
+    user_id = user.id
+    register_item.account_id = user_id
 
     res = crud_cd.create_collection_destination(db, register_item)
     if res is not None:

@@ -1,7 +1,5 @@
 from datetime import date, datetime
 from typing import List
-
-from requests import models
 from utils.scraping import scraping_contents as sc
 import utils.crud_collection_destination as crud_cd
 import utils.crud_content as crud_c
@@ -11,6 +9,7 @@ from models.content import Content as MC, ContentCreate as CC
 from models.scraping import ScrapingContent as SCM
 from database.config import SessionLocal
 from sqlalchemy.orm import Session
+from routers.authentication import manager
 
 router = APIRouter(
     prefix="/api/content",
@@ -36,7 +35,9 @@ async def get_content_list(db: Session = Depends(get_db), limit: int = 30):
 
 
 @router.post("/scraping_contents/", response_model=List[CC])
-async def scraping_contents(db: Session = Depends(get_db)):
+async def scraping_contents(
+        db: Session = Depends(get_db),
+        user=Depends(manager)):
     collection_destination_list = crud_cd.get_collection_destination_list(db)
 
     if len(collection_destination_list) == 0:
@@ -47,7 +48,7 @@ async def scraping_contents(db: Session = Depends(get_db)):
     create_content_list: List[CC] = []
     for collection_destination in collection_destination_list:
         cd_id = collection_destination.id
-        account_id = collection_destination.account_id
+        account_id = user.id
 
         scraping_contents: List[SCM] = sc(
             collection_destination.domain,
