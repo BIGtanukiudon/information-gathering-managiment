@@ -13,6 +13,8 @@ psycopg2-binary = "*"
 pydantic = "*"
 requests = "*"
 beautifulsoup4 = "*"
+fastapi-login = "*"
+python-multipart = "*"
 
 [dev-packages]
 autopep8 = "*"
