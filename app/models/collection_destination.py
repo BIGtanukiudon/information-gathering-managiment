@@ -22,10 +22,4 @@ class CollectionDestination(CollectionDestinationBase):
 
 
 class CollectionDestinationCreate(CollectionDestinationBase):
-    name: str
-    domain: str
-    contents_attr_name: str
-    title_attr_name: str
-    published_date_attr_name: str
-    content_url_attr_name: str
-    account_id: int
+    pass
