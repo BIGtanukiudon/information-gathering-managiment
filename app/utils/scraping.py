@@ -55,7 +55,10 @@ def scraping_contents(domain: str,
                 "href") is not None:
             content_url = content_url_element.get("href")
             if domain not in content_url:
-                content_url = domain + content_url
+                if domain.endswith("/") and content_url.startswith("/"):
+                    content_url = domain[:-1] + content_url
+                elif content_url.startswith("/"):
+                    content_url = domain + content_url
 
         content_detail = SC(
             title=title,

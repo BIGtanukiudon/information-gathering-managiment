@@ -4,7 +4,9 @@ from utils.scraping import scraping_contents as sc
 import utils.crud_collection_destination as crud_cd
 import utils.crud_content as crud_c
 from fastapi import APIRouter, Depends, status, HTTPException
-from starlette.status import HTTP_404_NOT_FOUND
+from fastapi.responses import JSONResponse
+from starlette.status import HTTP_200_OK, HTTP_404_NOT_FOUND
+from models.collection_destination import CollectionDestinationCreate as CDC
 from models.content import Content as MC, ContentCreate as CC
 from models.scraping import ScrapingContent as SCM
 from database.config import SessionLocal
@@ -84,6 +86,23 @@ async def scraping_contents(
     res = crud_c.create_content_list(db, create_content_list)
     if res:
         return create_content_list
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@router.post("/test_scraping_contents/")
+async def test_scraping_contents(
+        collection_destination: CDC,
+        user=Depends(manager)):
+    scraping_contents: List[SCM] = sc(
+        collection_destination.domain,
+        collection_destination.contents_attr_name,
+        collection_destination.title_attr_name,
+        collection_destination.published_date_attr_name,
+        collection_destination.content_url_attr_name)
+    if len(scraping_contents) > 0:
+        return scraping_contents
     else:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
