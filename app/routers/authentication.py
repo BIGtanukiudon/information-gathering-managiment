@@ -39,6 +39,18 @@ def hash_password(password: str, secret_key: str) -> str:
 async def register_account(
         register_item: AC,
         db: Session = Depends(get_db)):
+    """アカウント作成API
+
+    Args:
+        register_item (AC): アカウント情報(IDとPW).
+
+    Raises:
+        HTTPException: HTTP_400_BAD_REQUEST
+        HTTPException: HTTP_500_INTERNAL_SERVER_ERROR
+
+    Returns:
+        Response: HTTP_201_CREATED
+    """
     secret_key = env.SECRET_KEY
 
     if secret_key is None:
@@ -75,6 +87,17 @@ def get_user_by_name(name: str, db: Session = None):
 async def login(
         data: OAuth2PasswordRequestForm = Depends(),
         db: Session = Depends(get_db)):
+    """ログイン用API
+
+    Args:
+        data (OAuth2PasswordRequestForm, optional): IDとPW. Defaults to Depends().
+
+    Raises:
+        InvalidCredentialsException: トークンが存在しない場合に発生する例外.
+
+    Returns:
+        Response: HTTP_200_OK. アクセストークン(access_token).
+    """
     name = data.username
     password = data.password
     hashed_pw = hash_password(password, secret_key)
