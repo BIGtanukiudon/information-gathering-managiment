@@ -29,6 +29,17 @@ def get_db():
 
 @router.get("/list/{limit}", response_model=List[MC])
 async def get_content_list(db: Session = Depends(get_db), limit: int = 30):
+    """記事リスト取得API
+
+    Args:
+        limit (int, optional): 取得数の上限. Defaults to 30.
+
+    Raises:
+        HTTPException: HTTP_404_NOT_FOUND
+
+    Returns:
+        Response: HTTP_200_OK
+    """
     res = crud_c.get_content_list(db, limit)
     if len(res) == 0:
         raise HTTPException(status_code=HTTP_404_NOT_FOUND)
@@ -40,6 +51,15 @@ async def get_content_list(db: Session = Depends(get_db), limit: int = 30):
 async def scraping_contents(
         db: Session = Depends(get_db),
         user=Depends(manager)):
+    """登録してある収集先情報を元にスクレイピングを行い、記事を登録するAPI
+
+    Raises:
+        HTTPException: HTTP_404_NOT_FOUND
+        HTTPException: HTTP_500_INTERNAL_SERVER_ERROR
+
+    Returns:
+        Response: HTTTP_200_OK
+    """
     collection_destination_list = crud_cd.get_collection_destination_list(db)
 
     if len(collection_destination_list) == 0:
@@ -95,6 +115,28 @@ async def scraping_contents(
 async def test_scraping_contents(
         collection_destination: CDC,
         user=Depends(manager)):
+    """スクレイピングテスト用API
+
+    Args:
+        collection_destination (CDC): 収集先情報.
+
+    Raises:
+        HTTPException: HTTP_500_INTERNAL_SERVER_ERROR
+
+    Returns:
+        Response: HTTP_200_OK
+
+    Note:
+        登録する収集先情報について。
+
+        name: 収集先の名前。
+        domain: 収集先のドメイン。
+        contents_attr_name: 記事部分だと判断できるclass属性のクラス名等。（例：.entry-content。ドットまで入れる。）
+        title_attr_name: 記事タイトル部分だと判断できるclass属性のクラス名やname属性の値等。（例：.title。ドットまで入れる。）
+        published_date_attr_name: 公開日部分だと判断できるclass属性のクラス名やname属性の値等。（例：.published-at。ドットまで入れる。）
+        content_url_attr_name: 記事本文へ遷移するURL部分だと判断できるclass属性のクラス名やname属性の値等。（例：.content-url。ドットまで入れる。）
+        account_id: アカウントID。基本は0でOK。
+    """
     scraping_contents: List[SCM] = sc(
         collection_destination.domain,
         collection_destination.contents_attr_name,
