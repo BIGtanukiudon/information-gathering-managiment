@@ -49,6 +49,12 @@
 
 # 本番環境
 
+1. `app/config`下に`.env`ファイルを作成する。`.env`ファイルは`.env.template`をコピーする。
+2. イメージをビルドする。
+3. `docker-compose.prod.yaml`の`command: pipenv run start`をコメントアウトし、コンテナを起動する。
+4. アプリケーションコンテナに入り、DB のマイグレーションを実行する。
+5. 一度、関連コンテナを停止し、 `docker-compose.prod.yaml`の`command: pipenv run start`のコメントアウトを外し、再度起動。
+
 ## イメージビルド
 
 ```cmd
@@ -57,6 +63,13 @@ docker-compose -f docker-compose.prod.yaml up -d
 ```
 
 # 開発環境
+
+# 手順
+
+1. `app/config`下に`.env`ファイルを作成する。`.env`ファイルは`.env.template`をコピーする。
+2. イメージをビルドし、アプリケーションを起動する。
+3. アプリケーションコンテナに入り、DB のマイグレーションを実行する。
+4. `app`ディレクトリ下で`pipenv run start`でを実行し、サーバー起動。
 
 ## イメージビルド
 
@@ -114,6 +127,19 @@ alembic revision -m "hogehoge"
 ```bash
 cd app
 alembic upgrade head
+```
+
+# env ファイル
+
+`.env`ファイルに環境変数を設定する。
+
+```.env
+SECRET_KEY=hoge PWのハッシュ化等に使う
+POSTGRES_USER=hoge
+POSTGRES_PASSWORD=hoge
+POSTGRES_SERVER=hoge
+POSTGRES_PORT=5432
+POSTGRES_DB=hoge
 ```
 
 # 注意事項
