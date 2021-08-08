@@ -111,6 +111,60 @@ async def scraping_contents(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+@router.get("/get_scraping_contents/", response_model=List[CC])
+async def get_scraping_contents(
+        db: Session = Depends(get_db),
+        user=Depends(manager)):
+    """登録してある収集先情報を元にスクレイピングを行い、記事を取得するAPI
+
+    Raises:
+        HTTPException: HTTP_404_NOT_FOUND
+
+    Returns:
+        Response: HTTTP_200_OK
+    """
+    collection_destination_list = crud_cd.get_collection_destination_list(db)
+
+    if len(collection_destination_list) == 0:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+
+    registered_content_list = crud_c.get_content_list(db, 0)
+
+    create_content_list: List[CC] = []
+    for collection_destination in collection_destination_list:
+        cd_id = collection_destination.id
+        account_id = user.id
+
+        scraping_contents: List[SCM] = sc(
+            collection_destination.domain,
+            collection_destination.contents_attr_name,
+            collection_destination.title_attr_name,
+            collection_destination.published_date_attr_name,
+            collection_destination.content_url_attr_name)
+
+        for scraping_content in scraping_contents:
+            today = date.today()
+            is_registerd = next(
+                filter(
+                    lambda x: x.title == scraping_content.title,
+                    registered_content_list), None) is not None
+
+            # 当日の日付のもの及び、まだ登録が無いものを登録
+            if today == datetime.date(
+                    scraping_content.published_at) and is_registerd is False:
+                content = CC(
+                    title=scraping_content.title,
+                    content_url=scraping_content.content_url,
+                    published_at=scraping_content.published_at,
+                    domain=scraping_content.domain,
+                    is_read_later=False,
+                    collection_destination_id=cd_id,
+                    account_id=account_id
+                )
+                create_content_list.append(content)
+        return create_content_list
+
+
 @router.post("/test_scraping_contents/")
 async def test_scraping_contents(
         collection_destination: CDC,
