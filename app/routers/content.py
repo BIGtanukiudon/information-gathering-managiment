@@ -59,6 +59,9 @@ async def scraping_contents(
 
     Returns:
         Response: HTTTP_200_OK
+
+    Note:
+        当日の記事のみ登録。
     """
     collection_destination_list = crud_cd.get_collection_destination_list(db)
 
@@ -122,6 +125,9 @@ async def get_scraping_contents(
 
     Returns:
         Response: HTTTP_200_OK
+
+    Note:
+        当日の記事のみ取得。
     """
     collection_destination_list = crud_cd.get_collection_destination_list(db)
 
