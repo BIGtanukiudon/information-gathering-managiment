@@ -168,7 +168,7 @@ async def get_scraping_contents(
                     account_id=account_id
                 )
                 create_content_list.append(content)
-        return create_content_list
+    return create_content_list
 
 
 @router.post("/test_scraping_contents/")
