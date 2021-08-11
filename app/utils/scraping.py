@@ -11,6 +11,7 @@ def scraping_contents(domain: str,
                       published_date_attr_name: str,
                       content_url_attr_name: str) -> List[SC]:
     res = requests.get(domain)
+    res.encoding = res.apparent_encoding
     soup = BeautifulSoup(res.text, "html.parser")
 
     contents = soup.select(contents_attr_name)
