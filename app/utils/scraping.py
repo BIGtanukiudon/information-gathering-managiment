@@ -11,6 +11,7 @@ def scraping_contents(domain: str,
                       published_date_attr_name: str,
                       content_url_attr_name: str) -> List[SC]:
     res = requests.get(domain)
+    res.encoding = res.apparent_encoding
     soup = BeautifulSoup(res.text, "html.parser")
 
     contents = soup.select(contents_attr_name)
@@ -38,6 +39,7 @@ def scraping_contents(domain: str,
 
         if title_elements is not None and title_elements.get_text() is not None:
             title = title_elements.get_text()
+            title = title.strip()
 
         published_at = ""
         if published_date_element is not None and published_date_element.get_text() is not None:
