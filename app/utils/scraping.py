@@ -38,6 +38,7 @@ def scraping_contents(domain: str,
 
         if title_elements is not None and title_elements.get_text() is not None:
             title = title_elements.get_text()
+            title = title.strip()
 
         published_at = ""
         if published_date_element is not None and published_date_element.get_text() is not None:
