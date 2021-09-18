@@ -33,3 +33,8 @@ def test_get_collection_destination():
     res_json = response.json()
     assert response.status_code == 200
     assert res_json["name"] == "pytest用"
+
+
+def test_delete_collection_destination():
+    response = client.delete(f"{api_endpoint}/1")
+    assert response.status_code == 204

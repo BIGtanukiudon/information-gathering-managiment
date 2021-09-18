@@ -23,3 +23,19 @@ def create_collection_destination(db: Session, item: CDC):
     except SQLAlchemyError as e:
         print(e)
         return None
+
+
+def delete_collection_destination(db: Session, collection_destination_id: int):
+    try:
+        query = db.query(CDDM4G).filter(
+            CDDM4G.id == collection_destination_id).first()
+        if query is None:
+            return None
+
+        db.delete(query)
+        db.commit()
+        return 204
+    except SQLAlchemyError as e:
+        db.rollback()
+        print(e)
+        return 500

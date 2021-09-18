@@ -1,7 +1,7 @@
 from typing import List
 from fastapi import APIRouter, Depends, status, HTTPException
 from fastapi.responses import JSONResponse
-from starlette.status import HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND
+from starlette.status import HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR
 from models.collection_destination import CollectionDestination as CD, CollectionDestinationCreate as CDC
 from database.config import SessionLocal
 from sqlalchemy.orm import Session
@@ -102,3 +102,33 @@ async def register_collection_destination(
     else:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@router.delete("/{collection_destination_id}", response_model=CD)
+async def delete_collection_destination(
+        db: Session = Depends(get_db),
+        collection_destination_id: int = 0,
+        user=Depends(manager)):
+    """収集先情報削除API
+
+    Args:
+        collection_destination_id (int, optional): 収集先ID. Defaults to 0.
+
+    Raises:
+        HTTPException: HTTP_400_BAD_REQUEST
+        HTTPException: TTP_404_NOT_FOUND
+        HTTPException: HTTP_500_INTERNAL_SERVER_ERROR
+
+    Returns:
+        Response: HTTP_204_NO_CONTENT
+    """
+    if collection_destination_id <= 0:
+        raise HTTPException(status_code=HTTP_400_BAD_REQUEST)
+
+    res = crud_cd.delete_collection_destination(db, collection_destination_id)
+    if res == 204:
+        return JSONResponse(status_code=status.HTTP_204_NO_CONTENT)
+    elif res is None:
+        raise HTTPException(status_code=HTTP_404_NOT_FOUND)
+    elif res == 500:
+        raise HTTPException(status_code=HTTP_500_INTERNAL_SERVER_ERROR)
